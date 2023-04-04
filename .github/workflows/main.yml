@@ -17,13 +17,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build docker-compose
         run: docker-compose -f ./flaskr/docker-compose.yml up --build -d
   sca:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           mkdir -p logs/
       - name: Safety
@@ -31,7 +31,7 @@ jobs:
           pip install safety
 
           safety check -r Environment/App/app/flask/requirements.txt > logs/result-safety.txt
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: logs
           path: logs/result.txt
