@@ -4,7 +4,8 @@ on:
     branches:
       - main
 jobs:
-  secret-scan:
+  check-secrets:
+    name: Checking for Secrets
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -14,6 +15,7 @@ jobs:
       - uses: max/secret-scan@master
         with:
           exclude_path: logs/exclude.txt
+
   build:
     runs-on: ubuntu-latest
     steps:
