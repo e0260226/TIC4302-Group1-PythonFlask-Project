@@ -1,9 +1,9 @@
-name: Flaskr Pipeline
+name: Test 2
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   format-pylint:
