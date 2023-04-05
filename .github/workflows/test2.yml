@@ -1,9 +1,9 @@
 name: Test 2
 on:
   push:
-    branches:
-      - main
+
 jobs:
+  build:
   format-pylint:
     runs-on: ubuntu-latest
     steps:
