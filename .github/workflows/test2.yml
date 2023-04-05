@@ -18,6 +18,7 @@ jobs:
     - name: Run pylint
       run: |
         pylint --rcfile=pylint.conf flaskr > pylint.txt
+
     - name: Upload pylint results
       uses: actions/upload-artifact@v3
       with:
