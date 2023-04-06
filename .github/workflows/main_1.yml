@@ -1,10 +1,8 @@
 name: Flaskr Pipeline
-
 on:
   push:
     branches:
       - master
-
 jobs:
   format-pylint:
     runs-on: ubuntu-latest
@@ -25,7 +23,6 @@ jobs:
       with:
           name: pylint-results
           path: pylint.txt
-
   secret-scan:
     runs-on: ubuntu-latest
 
@@ -42,7 +39,6 @@ jobs:
         with:
             name: bandit-results
             path: bandit.json
-
   dockerfile-linter:
     runs-on: ubuntu-latest
 
@@ -60,22 +56,18 @@ jobs:
         with:
           dockerfile: ./Dockerfile.test
           no-fail: true
-
   build:
     runs-on: ubuntu-latest
     needs: [format-pylint, secret-scan, dockerfile-linter]
-
     steps:
       - uses: actions/checkout@v3
 
       - name: Build Docker image
         run: |
           docker build -t flaskr -f Dockerfile .   
-
   sca:
     runs-on: ubuntu-latest
     needs: build
-
     steps:
       - uses: actions/checkout@v3
 
