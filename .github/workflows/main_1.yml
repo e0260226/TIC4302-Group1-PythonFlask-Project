@@ -1,9 +1,9 @@
-name: CI/CD
+name: CI-CD
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   format-pylint:
