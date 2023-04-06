@@ -1,4 +1,4 @@
-name: CI-CD
+name: main_1
 on:
   push:
     branches:
@@ -127,7 +127,7 @@ jobs:
       - name: Run Dockle
         uses: erzz/dockle-action@v1.1.1
         with:
-          image: ${{ secrets.DOCKER_USERNAME }}/tic4302-demo:latest
+          image: ${{ secrets.DOCKER_USERNAME }}/tic4302:latest
           report-format: json
           report-name: dockle-report
 
@@ -137,58 +137,3 @@ jobs:
         with:
           name: Dockle Report
           path: dockle-report.json
-
-
-  docker-bnp:
-      runs-on: ubuntu-latest
-      needs: [container-scan]
-
-      steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/tic4302-demo:latest
-
-  zap:
-    needs: [ docker-bnp ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Build Image for testing
-        run: |
-          docker build -t flaskr -f Dockerfile . 
-
-      - name: Run Image
-        run: |
-          docker run -d -p 5000:5000 flaskr
-
-      - name: Run ZAP Scan
-        run: |
-            docker run --net=host -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:5000 > zap.log || true
-
-      - name: Upload Report
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: ZAP Report
-          path: zap.log
-
