@@ -1,8 +1,8 @@
-name: Flaskr Pipeline
+name: CI-CD
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   format-pylint:
     runs-on: ubuntu-latest
