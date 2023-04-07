@@ -107,4 +107,4 @@ jobs:
 
     - name: Build Docker image for testing
       run: |
-        docker build -t flaskr-test -f Dockerfile.test
+        docker build -t flaskr-test -f Dockerfile.test .
