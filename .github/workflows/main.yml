@@ -1,4 +1,4 @@
-name: CI
+name: CI-CD
 on:
   push:
     branches:
@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: |
           mkdir -p logs/
-          echo 'Environment/App/db' > logs/exclude.txt
+          echo 'secret-scan' > logs/exclude.txt
       - uses: max/secret-scan@master
         with:
           exclude_path: logs/exclude.txt
