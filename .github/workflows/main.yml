@@ -14,7 +14,7 @@ jobs:
           echo 'secret-scan' > logs/exclude.txt
       - uses: max/secret-scan@master
         with:
-          exclude_path: logs/exclude.txt
+          exclude_path: tests/data.sql
   build:
     runs-on: ubuntu-latest
     steps:
