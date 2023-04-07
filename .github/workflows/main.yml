@@ -7,7 +7,7 @@ jobs:
   secret-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           mkdir -p logs/
           echo 'secret-scan' > logs/exclude.txt
@@ -23,7 +23,7 @@ jobs:
   sca:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           mkdir -p logs/
       - name: Safety
