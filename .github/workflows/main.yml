@@ -99,3 +99,12 @@ jobs:
         with:
           name: pyraider-logs
           path: result.json             
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build Docker image for testing
+      run: |
+        docker build -t flaskr-test -f Dockerfile.test
