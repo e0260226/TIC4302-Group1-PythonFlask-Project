@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build docker-compose
-        run: docker-compose -f ./flaskr/docker-compose.yml up --build -d
+        run: docker-compose -f flaskr/docker-compose.yml up --build -d
   sca:
     runs-on: ubuntu-latest
     steps:
