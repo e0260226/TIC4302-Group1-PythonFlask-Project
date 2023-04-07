@@ -121,3 +121,10 @@ jobs:
           image: ${{ secrets.DOCKER_USERNAME }}/tic4302-demo:latest
           report-format: json
           report-name: dockle-report
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Dockle Report
+          path: dockle-report.json
