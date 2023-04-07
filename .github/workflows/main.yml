@@ -4,14 +4,7 @@ on:
     branches:
       - main
 jobs:
-  secret-scan X:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: max/secret-scan@master
-        with:
-          include_path: tests/include_paths.txt
-          exclude_path: tests/exclude_paths.txt
+
   secret-scan:
     runs-on: ubuntu-latest
     steps:
