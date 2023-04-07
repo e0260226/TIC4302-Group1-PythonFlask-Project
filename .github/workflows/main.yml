@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   format-pylint:
     runs-on: ubuntu-latest
@@ -26,114 +27,46 @@ jobs:
 
   secret-scan:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          mkdir -p logs/
-          echo 'secret-scan' > logs/exclude.txt
-      - uses: max/secret-scan@master
+
+      - name: Scan for secrets with bandit
+        run: |
+          pip install bandit
+          bandit -r ./flaskr -f json -o bandit.json
+
+      - name: Upload bandit results
+        uses: actions/upload-artifact@v3
         with:
-          exclude_path: tests/data.sql
+            name: bandit-results
+            path: bandit.json
 
-
-
-  sca:
+  dockerfile-linter:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          mkdir -p logs/
-      - name: Safety
-        run: >
-          pip install safety
 
-          safety check -r ./requirements.txt > logs/result-safety.txt
-      - uses: actions/upload-artifact@v2
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v2.0.0
         with:
-          name: logs
-          path: logs/result.txt
-      - name: Pyraider
-        run: >
-          pip install pyraider
+          dockerfile: ./Dockerfile
+          no-fail: true
 
-          pyraider check -f ./requirements.txt > logs/result-pyraider.txt
-      - uses: actions/upload-artifact@v2
+      - name: Lint Dockerfile test
+        uses: hadolint/hadolint-action@v2.0.0
         with:
-          name: logs
-          path: logs/result.json
-  sast:
-    needs:
-      - build
-      - sca
+          dockerfile: ./Dockerfile.test
+          no-fail: true
+
+  build:
     runs-on: ubuntu-latest
+    needs: [format-pylint, secret-scan, dockerfile-linter]
+
     steps:
-      - uses: actions/checkout@v2
-      - run: |
-          mkdir -p logs/      
-      - uses: jpetrucciani/bandit-check@master
-        with:
-          path: ./Environment/App/app/flask/chaimtube.py
-          bandit_flags: -lll -o logs/output.json -f json
-      - uses: actions/upload-artifact@v2
-        with:
-          name: logs
-          path: logs/output.json
-  dast:
-    needs:
-      - build
-      - sca
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build Image for testing
-        run: docker-compose -f ./Environment/App/docker-compose.yml up --build -d
-      - name: ZAP Scan
-        uses: zaproxy/action-baseline@v0.6.1
-        with:
-          target: http://localhost:5000
-          cmd_options: -a
-  
-  deploy:
-    needs:
-      - dast
-      - sast
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: ./Environment/App/app/
-          file: ./Environment/App/app/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          push: true
-          tags: e0260226/tic4302demo:latest
-  
-  container-scan:
-    needs:
-      - deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run Dockle
-        uses: erzz/dockle-action@v1.1.1
-        with:
-          image: e0260226/tic4302demo
-          report-format: json
-          report-name: dockle-report
-      - name: Upload Report
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: Dockle Report
-          path: dockle-report.json 
+      - uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t flaskr -f Dockerfile .   
