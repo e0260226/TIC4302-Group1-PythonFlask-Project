@@ -8,13 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: |
-          mkdir -p logs/
-          echo 'secret-scan' > logs/exclude.txt
       - uses: max/secret-scan@master
         with:
-          include_path: 'tests/include_paths.txt'
-          exclude_path: 'tests/exclude_paths.txt'
+          include_path: tests/include_paths.txt
+          exclude_path: tests/exclude_paths.txt
   secret-scan:
     runs-on: ubuntu-latest
     steps:
