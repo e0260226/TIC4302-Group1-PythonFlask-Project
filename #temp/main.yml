@@ -140,7 +140,7 @@ jobs:
       - name: Run Dockle
         uses: erzz/dockle-action@v1.1.1
         with:
-          image: e0260226/tic4302demo
+          image: ${{ secrets.DOCKER_USERNAME }}/tic4302-demo:latest
           report-format: json
           report-name: dockle-report
 
@@ -178,7 +178,7 @@ jobs:
           context: .
           push: true
           tags: e0260226/tic4302demo:latest
-
+          tags: ${{ secrets.DOCKER_USERNAME }}/tic4302-demo:latest
 
   zap:
     needs: [ docker-bnp ]
