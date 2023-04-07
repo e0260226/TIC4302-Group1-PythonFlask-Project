@@ -5,6 +5,26 @@ on:
       - main
 jobs:
 
+  format-pylint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install pylint
+      run: |
+        pip install -e .
+        pip install pylint
+
+    - name: Run pylint
+      run: |
+        pylint --rcfile=pylint.conf flaskr > pylint.txt
+
+    - name: Upload pylint results
+      uses: actions/upload-artifact@v3
+      with:
+          name: pylint-results
+          path: pylint.txt
+          
   secret-scan:
     runs-on: ubuntu-latest
     steps:
@@ -15,12 +35,24 @@ jobs:
       - uses: max/secret-scan@master
         with:
           exclude_path: tests/data.sql
-  build:
+
+  secret-scan:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Build docker-compose
-        run: docker-compose -f flaskr/docker-compose.yml up --build -d
+      - uses: actions/checkout@v3
+
+      - name: Scan for secrets with bandit
+        run: |
+          pip install bandit
+          bandit -r ./flaskr -f json -o bandit.json
+
+      - name: Upload bandit results
+        uses: actions/upload-artifact@v3
+        with:
+            name: bandit-results
+            path: bandit.json
+
   sca:
     runs-on: ubuntu-latest
     steps:
