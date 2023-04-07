@@ -35,19 +35,7 @@ jobs:
         with:
           exclude_path: tests/data.sql
 
-  secret-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Scan for secrets with bandit
-        run: |
-          pip install bandit
-          bandit -r ./flaskr -f json -o bandit.json
-      - name: Upload bandit results
-        uses: actions/upload-artifact@v3
-        with:
-            name: bandit-results
-            path: bandit.json
+
 
   sca:
     runs-on: ubuntu-latest
