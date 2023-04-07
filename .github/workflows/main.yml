@@ -12,7 +12,6 @@ jobs:
         with:
           include_path: 'tests/include_paths.txt'
           exclude_path: 'tests/exclude_paths.txt'
-
   secret-scan:
     runs-on: ubuntu-latest
     steps:
