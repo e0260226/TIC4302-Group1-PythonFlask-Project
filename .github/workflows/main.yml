@@ -4,7 +4,6 @@ on:
     branches:
       - main
 jobs:
-
   format-pylint:
     runs-on: ubuntu-latest
     steps:
@@ -24,7 +23,7 @@ jobs:
       with:
           name: pylint-results
           path: pylint.txt
-          
+
   secret-scan:
     runs-on: ubuntu-latest
     steps:
@@ -38,15 +37,12 @@ jobs:
 
   secret-scan:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-
       - name: Scan for secrets with bandit
         run: |
           pip install bandit
           bandit -r ./flaskr -f json -o bandit.json
-
       - name: Upload bandit results
         uses: actions/upload-artifact@v3
         with:
