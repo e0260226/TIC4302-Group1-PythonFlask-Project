@@ -73,15 +73,13 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t flaskr -f Dockerfile .
-
-
   SCA:
     runs-on: ubuntu-latest
     needs: 
       - format-pylint
       - secret-scan
       - dockerfile-linter
-      
+
     steps:
       - uses: actions/checkout@v3
 
