@@ -162,6 +162,26 @@ jobs:
           tags: e0260226/finalproject:CI-CD
 
 
+  Container-Scan:
+    needs:
+      - Docker-Build-Push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Dockle
+        uses: erzz/dockle-action@v1.1.1
+        with:
+          image: e0260226/finalproject
+          report-format: json
+          report-name: dockle-report
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Dockle Report
+          path: dockle-report.json
+
   OWASP ZAP:
     needs:
       - Docker-Build-Push
@@ -189,23 +209,5 @@ jobs:
           name: ZAP Report
           path: zap.log
 
-  Container-Scan:
-    needs:
-      - Docker-Build-Push
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Run Dockle
-        uses: erzz/dockle-action@v1.1.1
-        with:
-          image: e0260226/finalproject
-          report-format: json
-          report-name: dockle-report
-
-      - name: Upload Report
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: Dockle Report
-          path: dockle-report.json
 
