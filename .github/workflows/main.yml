@@ -132,30 +132,11 @@ jobs:
           path: test-results.xml
 
 
-
-
-  Container-Scan:
-    needs: [test, sca]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Run Dockle
-        uses: erzz/dockle-action@v1.1.1
-        with:
-          image: e0260226/tic4302demo
-          report-format: json
-          report-name: dockle-report
-
-      - name: Upload Report
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: Dockle Report
-          path: dockle-report.json
-
   Docker-Build-Push:
       runs-on: ubuntu-latest
-      needs: [Container-Scan]
+      needs:
+        - sca
+        - test
 
       steps:
       - uses: actions/checkout@v3
@@ -179,6 +160,27 @@ jobs:
           context: .
           push: true
           tags: e0260226/finalproject:CI-CD
+
+
+  Container-Scan:
+    needs: [Docker-Build-Push]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Dockle
+        uses: erzz/dockle-action@v1.1.1
+        with:
+          image: e0260226/finalproject
+          report-format: json
+          report-name: dockle-report
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Dockle Report
+          path: dockle-report.json
+
 
 
   zap:
