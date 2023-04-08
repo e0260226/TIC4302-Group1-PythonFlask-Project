@@ -77,7 +77,11 @@ jobs:
 
   SCA:
     runs-on: ubuntu-latest
-
+    needs: 
+      - format-pylint
+      - secret-scan
+      - dockerfile-linter
+      
     steps:
       - uses: actions/checkout@v3
 
@@ -111,7 +115,7 @@ jobs:
     needs: 
       - Docker-Build
       - SCA
-      
+
     steps:
     - uses: actions/checkout@v3
 
