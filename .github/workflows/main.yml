@@ -142,7 +142,7 @@ jobs:
       - name: Run Dockle
         uses: erzz/dockle-action@v1.1.1
         with:
-          image: e0260226/finalproject
+          image: e0260226/tic4302demo
           report-format: json
           report-name: dockle-report
 
@@ -178,7 +178,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: e0260226/finalproject:CD-CD
+          tags: e0260226/finalproject:CI-CD
 
 
   zap:
