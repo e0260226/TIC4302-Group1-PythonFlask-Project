@@ -132,7 +132,7 @@ jobs:
           path: test-results.xml
 
 
-  Docker-Build-Push:
+  Deploy:
       runs-on: ubuntu-latest
       needs:
         - sca
@@ -164,7 +164,7 @@ jobs:
 
   Container-Scan:
     needs:
-      - Docker-Build-Push
+      - Deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -184,7 +184,7 @@ jobs:
 
   OWASP ZAP:
     needs:
-      - Docker-Build-Push
+      - Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
