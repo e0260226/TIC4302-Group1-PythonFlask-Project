@@ -168,10 +168,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run Dockle
+      - name: Run Dockle                                                              
         uses: erzz/dockle-action@v1.1.1
         with:
-          image: e0260226/finalproject
+          image: e0260226/finalproject:CI-CD
           report-format: json
           report-name: dockle-report
 
