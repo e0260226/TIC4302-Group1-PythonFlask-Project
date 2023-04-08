@@ -140,7 +140,7 @@ jobs:
       - name: Run Dockle
         uses: erzz/dockle-action@v1.1.1
         with:
-          image: e0260226/tic4302demo
+          image: e0260226/finalproject
           report-format: json
           report-name: dockle-report
 
@@ -177,7 +177,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: e0260226/tic4302demo:latest
+          tags: e0260226/finalproject:latest
 
 
   zap:
