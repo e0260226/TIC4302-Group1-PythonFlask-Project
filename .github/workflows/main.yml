@@ -182,7 +182,7 @@ jobs:
           name: Dockle Report
           path: dockle-report.json
 
-  OWASP ZAP:
+  zap:
     needs:
       - Deploy
     runs-on: ubuntu-latest
