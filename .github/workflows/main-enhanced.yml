@@ -60,17 +60,6 @@ jobs:
           dockerfile: ./Dockerfile.test
           no-fail: true
 
-  Docker-Build:
-    runs-on: ubuntu-latest
-    needs: 
-      - format-pylint
-      - secret-scan
-      - dockerfile-linter
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build Docker image
-        run: |
-          docker build -t flaskr -f Dockerfile .
   SCA:
     runs-on: ubuntu-latest
     needs: 
@@ -98,7 +87,19 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: pyraider-logs
-          path: result.json   
+          path: result.json
+          
+  Docker-Build:
+    runs-on: ubuntu-latest
+    needs: 
+      - format-pylint
+      - secret-scan
+      - dockerfile-linter
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Docker image
+        run: |
+          docker build -t flaskr -f Dockerfile .
 
   Docker-Test:
     runs-on: ubuntu-latest
