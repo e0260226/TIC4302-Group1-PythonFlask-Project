@@ -11,6 +11,8 @@ RUN pip install --editable .
 
 RUN flask init-db
 
+RUN python -m pip install --upgrade pip
+
 # Unit tests
 # RUN pip install pytest && pytest
 
