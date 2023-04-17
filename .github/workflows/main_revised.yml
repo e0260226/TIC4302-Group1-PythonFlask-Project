@@ -27,10 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          lfs: true
-          token: ${{ secrets.ACCESS_TOKEN }}
-     
       - run: |
           mkdir -p logs/
           echo './flaskr/db.py' > logs/exclude.txt
