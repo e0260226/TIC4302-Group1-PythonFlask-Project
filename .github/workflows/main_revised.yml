@@ -23,18 +23,6 @@ jobs:
           name: pylint-results
           path: pylint.txt
 
-  secret-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          mkdir -p logs/
-          echo './flaskr/db.py' > logs/exclude.txt
-          echo './tests' > logs/exclude.txt
-      - uses: max/secret-scan@master
-        with:
-          exclude_path: logs/exclude.txt
-
   sast:
     runs-on: ubuntu-latest
 
@@ -68,6 +56,18 @@ jobs:
         with:
           dockerfile: ./Dockerfile.test
           no-fail: true
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          mkdir -p logs/
+          echo './flaskr/db.py' > logs/exclude.txt
+          echo './tests' > logs/exclude.txt
+      - uses: max/secret-scan@master
+        with:
+          exclude_path: logs/exclude.txt
 
   build:
     runs-on: ubuntu-latest
