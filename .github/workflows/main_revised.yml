@@ -63,7 +63,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: |
           mkdir -p logs/
-          echo 'flaskr' > logs/exclude.txt
+          echo 'flaskr/db.py' > logs/exclude.txt
           echo 'tests' > logs/exclude.txt
       - uses: max/secret-scan@master
         with:
@@ -72,7 +72,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: [format-pylint, sast, dockerfile-linter]
+    needs: [format-pylint, secret-scan, sast, dockerfile-linter]
 
     steps:
       - uses: actions/checkout@v3
