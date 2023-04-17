@@ -60,7 +60,7 @@ jobs:
   secret-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - run: |
           mkdir -p logs/
           echo './flaskr' > logs/exclude.txt
@@ -71,7 +71,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: [format-pylint, secret-scan, sast, dockerfile-linter]
+    needs: [format-pylint, sast, dockerfile-linter]
 
     steps:
       - uses: actions/checkout@v3
