@@ -23,7 +23,7 @@ jobs:
           name: pylint-results
           path: pylint.txt
 
-  secret-scan:
+  sast:
     runs-on: ubuntu-latest
 
     steps:
@@ -57,9 +57,22 @@ jobs:
           dockerfile: ./Dockerfile.test
           no-fail: true
 
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          mkdir -p logs/
+          echo 'flaskr/db.py' > logs/exclude.txt
+          echo 'tests' > logs/exclude.txt
+      - uses: max/secret-scan@master
+        with:
+          exclude_path: logs/exclude.txt
+
+
   build:
     runs-on: ubuntu-latest
-    needs: [format-pylint, secret-scan, dockerfile-linter]
+    needs: [format-pylint, secret-scan, sast, dockerfile-linter]
 
     steps:
       - uses: actions/checkout@v3
@@ -120,11 +133,32 @@ jobs:
           name: test-results
           path: test-results.xml
 
+  zap:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
+      - name: Build Image for testing
+        run: |
+          docker build -t flaskr -f Dockerfile . 
+      - name: Run Image
+        run: |
+          docker run -d -p 5000:5000 flaskr
+      - name: Run ZAP Scan
+        run: |
+            docker run --net=host -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:5000 > zap.log || true
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: ZAP Report
+          path: zap.log
 
 
   Container-Scan:
-    needs: [test, sca]
+    needs: [test, sca, zap]
     runs-on: ubuntu-latest
 
     steps:
@@ -169,26 +203,3 @@ jobs:
           push: true
           tags: e0260226/finalproject:CI-CD
 
-
-  zap:
-    needs: [ Docker-Build-Push ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Build Image for testing
-        run: |
-          docker build -t flaskr -f Dockerfile . 
-      - name: Run Image
-        run: |
-          docker run -d -p 5000:5000 flaskr
-      - name: Run ZAP Scan
-        run: |
-            docker run --net=host -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:5000 > zap.log || true
-      - name: Upload Report
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: ZAP Report
-          path: zap.log
